@@ -7,14 +7,13 @@ class Dude:
     influences = []
 
     def add_influence(self, name):
-        print 'allo'
         self.influences.append(name)
 
     # Calcule récursivement la profondeur des liens du dude
-    def deepness(self, name):
+    def deepness(self):
         most_deep = 1
         for i in self.influences:
-            most_deep = max(most_deep, i.deepness)
+            most_deep = max(most_deep, entry[i].deepness())
         return most_deep
 
 
@@ -26,13 +25,22 @@ def parse(filepath):
         for line in f:
             # On crée le dude si celui-ci n'existe pas encore
             try:
-                listeDudes[line[0]]
-            except KeyError:
-                listeDudes[line[0]] = Dude()
+                i, j = [int(n) for n in line.split()]
 
-            listeDudes[line[0]].add_influence(line[-1])
+                try:
+                    listeDudes[i]
+                except KeyError:
+                    listeDudes[i] = Dude()
 
-    print (listeDudes)
+                try:
+                    listeDudes[j]
+                except KeyError:
+                    listeDudes[j] = Dude()
+
+                listeDudes[i].add_influence(j)
+            except :
+                pass 
+        
     return listeDudes
 
 #j'ai supposé qu'il n'y avait pas plus de 10 noeuds (0 à 9)
@@ -56,12 +64,12 @@ def parse(filepath):
 # MARCHE PAS
 if __name__ == "__main__":
     entry = parse("entry.txt")
-    
-    most_deep = 1
-    for dude in entry:
-        most_deep = max(most_deep, dude.deepness)
 
-    print most_deep
+    most_deep = 1
+    for i in entry.viewkeys():
+        most_deep = max(most_deep, entry[i].deepness())
+
+    # print most_deep
     #answer = visit(entry[0], entry[1:], [], 0)
     #print(str(answer))
             
